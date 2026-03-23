@@ -120,13 +120,60 @@ fnc f = manipulacionFormula (fnn f)
 RESOLUCION BINARIA
 -}
 
+--FUNCION AUXILIAR LEYES SIMPLIFICACION DE FORMULAS
+simplificacion :: Prop -> Prop 
+{-
+La implementacion actual convierte dos entradas a iguales, se debe revisar si no es contraproducente. 
+-}
+
+--NEUTROS
+--Disyuncion p or false 
+simplificacion (Or p (Cons False)) = p 
+--Conjuncion p and true 
+simplificacion (And p (Cons True)) = p
+
+--IDEMPOTENCIA
+--Or de variables 
+simplificacion (Or (Var a) (Var b)) = Var a
+    where Var b = Var a
+--Or de formula
+simplificacion (Or a b) = a 
+    where b = a
+simplificacion (And a b) = a
+    where b = a
+    
+--ABSORCION 
+--Disyuncion
+simplificacion (Or a (And b c)) = a
+    where b = a 
+--Conjuncion
+simplificacion (And d (Or e f)) = d 
+    where  d = e
+     
+---INVERSOS 
+--Tercero excluido
+simplificacion (Or a (Not b)) = Cons True
+    where b = a 
+--Contradiccion 
+simplificacion (And a (Not b)) = Cons False 
+    where b = a
+    
+--DOMINANCIA 
+--Disyuncion entre una formula y una constante verdadera 
+simplificacion (Or a (Cons True)) = Cons True 
+--Conjuncino entre una formula y una constante falsa
+simplificacion (And a (Cons False)) = Cons False
+
+
 --Sinonimos a usar
 type Literal = Prop
 type Clausula = [Literal]
 
 --Ejercicio 1
 clausulas :: Prop -> [Clausula]
-clausulas = undefined
+--Caso base-
+clausulas _ = [[]]
+clausulas (Literal a) = [[a]]
 
 --Ejercicio 2
 resolucion :: Clausula -> Clausula -> Clausula
