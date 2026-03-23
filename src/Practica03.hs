@@ -32,12 +32,89 @@ FORMAS NORMALES
 
 --Ejercicio 1
 fnn :: Prop -> Prop
-fnn = undefined
 
+--ATOMICAS
+--Variable atomica. 
+fnn (Var p) = Var p 
+--Constantes verdaderas y falsas
+fnn (Cons True) = Cons True 
+fnn (Cons False) = Cons False
+
+--NEGACIONES
+fnn (Not (Var p)) = Not (Var p)
+--Negacion de la negacion de una variable
+fnn (Not (Not (f))) = fnn f
+--Negacion de una constante falsa 
+fnn (Not (Cons True) ) = (Cons False)
+--Negacion de una constante verdadera
+fnn (Not (Cons False)) = (Cons True)
+
+--DE MORGAN
+--Negacion disyuncion
+fnn (Not (Or p q)) = And (fnn (Not p)) (fnn(Not q))
+--Negacion conjuncion 
+fnn (Not (And p q)) = Or (fnn(Not p)) (fnn (Not q))
+--NEGACION DE IMPLICACIONES 
+--Negacion Implicacion 
+fnn (Not (Impl p q)) = And (fnn p) (fnn(Not q))
+--Negacion Bi implicacion 
+{-
+Para la bicondicional ocupamos algo no tan intuitivo a primera vista.
+1. Eliminamos la bicondicional: (p<--->q) = (p--->q) and (q--->p)
+2. Trabajamos con una negacion, por cual al tener una conjuncion podemos usar DeMorgan
+not((p---->q) and (q---->p)) = (not (p--->q)) or (not (q---->p)). 
+-}
+fnn (Not (Syss p q)) = Or (fnn (Not (Impl p q))) (fnn (Not (Impl q p)))
+
+--OPERACIONES ENTRE FORMULAS
+--a) No necesitamos eliminar conectivo
+--Disyuncion
+fnn (Or p q) = Or (fnn p)  (fnn q)
+--Conjuncion
+fnn (And p q) = And (fnn p) (fnn q)
+--b) Necesitamos eliminar conectivo 
+--Implicacion 
+fnn (Impl p q) = Or (fnn(Not p)) (fnn(q))
+fnn (Syss p q) = And (fnn(Impl p q)) (fnn(Impl q p))
+
+
+{-
+FUNCION AUXILIAR DISTRIBUCION
+Nota: Para el ejercicio 2, tambien nec2esitamos ocupar una funcion auxiliar,en particular para atender el caso 
+de las disyunciones de la una formula. Fue complicado entender que solo necesitamos un numero limitado de casos.
+Nuestra primera idea fue cubrir todos los casos posibles, pero eso generaba errores de recursion. 
+-}
+
+--IMPLEMENTACION
+distr :: Prop -> Prop -> Prop
+--Primer argumento conjuncion, segundo elemento literal
+distr (And formula1 formula2) distribuido = And (distr formula1 distribuido) (distr formula2 distribuido)
+--Primer argumento literal, segundo elemento conjuncion 
+distr distribuido (And formula1 formula2) = And (distr distribuido formula1) (distr distribuido formula2)  
+--Ambas literales. Devolvemos su disyuncion
+distr formulaF formulaG = Or formulaF formulaG
+
+{-
+FUNCION AUXILIAR DE APLICACION 
+Una manera de llegar a la forma normal negativa con mayor facilidad es aplicar una segunda funcion auxiliar 
+con la cual podamos llamar a distr y en fnc unicamente llamar a esta funcion. 
+-}
+
+--IMPLEMENTACION 
+manipulacionFormula :: Prop -> Prop 
+--CASO CONJUNCION 
+manipulacionFormula (And p q) = And (manipulacionFormula p) (manipulacionFormula q)
+--CASO DISYUNCION- Llamamos a la funcion auxiliar de distribucion. 
+manipulacionFormula (Or p q) = distr (manipulacionFormula p) (manipulacionFormula q)
+--CASO INDIVIDUAL
+manipulacionFormula individual = individual
 
 --Ejercicio 2
+{-
+Finalmente la funcion fnc consta de una instruccion que consta de la llamada a las dos funciones auxiliares
+-}
 fnc :: Prop -> Prop
-fnc = undefined
+fnc f = manipulacionFormula (fnn f)
 
 {-
 RESOLUCION BINARIA

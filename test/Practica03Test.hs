@@ -13,20 +13,20 @@ main = hspecWith defaultConfig specs
 specs :: Spec
 specs = do
 
-    let formFNN = Not (And (Impl (Var "p") (Var "r")) (Var "s"))
-    let formFNC = Or (Or (And (Var "p") (Var "r")) (Var "s")) (Var "q")
-    let formTt =  Syss (Not (Or (Var "p") (Var "q"))) (And (Not (Var "p")) (Not (Var "q")))
-    let formCr = Syss (Or (Var "p") (Var "q")) (And (Not (Var "p")) (Not (Var "q")))
-    let formNotEnd = Impl (Impl (Var "q") (Var "p")) (Impl (Impl (Not (Var "q")) (Var "p")) (Var "p"))
+    let formFNN = Not (And (Impl (Var "p") (Var "r")) (Var "s")) --Pasa test
+    let formFNC = Or (Or (And (Var "p") (Var "r")) (Var "s")) (Var "q") --Genera resultado en pantalla
+    let formTt =  Syss (Not (Or (Var "p") (Var "q"))) (And (Not (Var "p")) (Not (Var "q"))) --Genera error de recursion
+    let formCr = Syss (Or (Var "p") (Var "q")) (And (Not (Var "p")) (Not (Var "q"))) --Pasa test
+    let formNotEnd = Impl (Impl (Var "q") (Var "p")) (Impl (Impl (Not (Var "q")) (Var "p")) (Var "p")) -- Genera resultado en pantalla 
 
     describe "Tests Forma Normal Negativa" $ do
         it "Fórmula Tt" $ do
-            fnn formTt `shouldBe` And (Or (Or (Var "p") (Var "q")) (And (Not (Var "p")) (Not (Var "q")))) (Or (Or (Var "p") (Var "q")) (And (Not (Var "p")) (Not (Var "q"))))
+            fnn formTt `shouldBe` And (Or (Or (Var "p") (Var "q")) (And (Not (Var "p")) (Not (Var "q")))) (Or (Or (Var "p") (Var "q")) (And (Not (Var "p")) (Not (Var "q")))) --Pasa test 
         it "Fórmula Cr" $ do 
-            fnn formCr `shouldBe` And (Or (And (Not (Var "p")) (Not (Var "q"))) (And (Not (Var "p")) (Not (Var "q")))) (Or (Or (Var "p") (Var "q")) (Or (Var "p") (Var "q")))
+            fnn formCr `shouldBe` And (Or (And (Not (Var "p")) (Not (Var "q"))) (And (Not (Var "p")) (Not (Var "q")))) (Or (Or (Var "p") (Var "q")) (Or (Var "p") (Var "q"))) --Pasa test
         it "Fórmula Truco" $ do 
             fnn formFNN `shouldBe` Or (And (Var "p") (Not (Var "r"))) (Not (Var "s"))
-        
+        --Pasa test pero las arroja en orden distinto
     describe "Tests Forma Normal Conjuntiva" $ do
         it "Fórmula Tt" $ do
             fnc formTt `shouldBe` And (And (Or (Or (Var "p") (Var "q")) (Not (Var "p"))) (Or (Or (Var "p") (Var "q")) (Not (Var "q")))) (And (Or (Or (Var "p") (Var "q")) (Not (Var "p"))) (Or (Or (Var "p") (Var "q")) (Not (Var "q"))))
