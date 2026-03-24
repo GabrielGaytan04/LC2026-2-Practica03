@@ -1,4 +1,4 @@
-cabal-version:      3.0
+cabal-version:    3.0
 -- The cabal-version field refers to the version of the .cabal specification,
 -- and can be different from the cabal-install (the tool) version and the
 -- Cabal (the library) version you are using. As such, the Cabal (the library)
@@ -67,7 +67,7 @@ library
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.21.0.0
+    build-depends:    base ^>= 4.17.2.0
 
     -- Directories containing source files.
     hs-source-dirs:   src
@@ -99,7 +99,7 @@ test-suite Practica03-test
 
     -- Test dependencies.
     build-depends:
-        base ^>=4.21.0.0,
+        base ^>=4.17.2.0,
         hspec,
         deepseq ^>=1.5.1.0,
         Practica03

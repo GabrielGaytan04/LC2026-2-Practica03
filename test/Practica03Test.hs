@@ -15,7 +15,7 @@ specs = do
 
     let formFNN = Not (And (Impl (Var "p") (Var "r")) (Var "s")) --Pasa test
     let formFNC = Or (Or (And (Var "p") (Var "r")) (Var "s")) (Var "q") --Genera resultado en pantalla
-    let formTt =  Syss (Not (Or (Var "p") (Var "q"))) (And (Not (Var "p")) (Not (Var "q"))) --Genera error de recursion
+    let formTt =  Syss (Not (Or (Var "p") (Var "q"))) (And (Not (Var "p")) (Not (Var "q"))) --Genera resultado
     let formCr = Syss (Or (Var "p") (Var "q")) (And (Not (Var "p")) (Not (Var "q"))) --Pasa test
     let formNotEnd = Impl (Impl (Var "q") (Var "p")) (Impl (Impl (Not (Var "q")) (Var "p")) (Var "p")) -- Genera resultado en pantalla 
 
@@ -29,16 +29,16 @@ specs = do
         --Pasa test pero las arroja en orden distinto
     describe "Tests Forma Normal Conjuntiva" $ do
         it "Fórmula Tt" $ do
-            fnc formTt `shouldBe` And (And (Or (Or (Var "p") (Var "q")) (Not (Var "p"))) (Or (Or (Var "p") (Var "q")) (Not (Var "q")))) (And (Or (Or (Var "p") (Var "q")) (Not (Var "p"))) (Or (Or (Var "p") (Var "q")) (Not (Var "q"))))
-        it "Fórmula Cr" $ do 
+            fnc formTt `shouldBe` And (And (Or (Or (Var "p") (Var "q")) (Not (Var "p"))) (Or (Or (Var "p") (Var "q")) (Not (Var "q")))) (And (Or (Or (Var "p") (Var "q")) (Not (Var "p"))) (Or (Or (Var "p") (Var "q")) (Not (Var "q")))) -- Si pasa test
+        it "Fórmula Cr" $ do --Genera resultado correcto, solo en unos dos elementos genera en orden distinto la disyuncion
             fnc formCr `shouldBe` And (And (And (Or (Not (Var "p")) (Not (Var "p"))) (Or (Not (Var "q")) (Not (Var "p")))) (And (Or (Not (Var "p")) (Not (Var "q"))) (Or (Not (Var "q")) (Not (Var "q"))))) (Or (Or (Var "p") (Var "q")) (Or (Var "p") (Var "q")))
-        it "Fórmula Truco" $ do 
+        it "Fórmula Truco" $ do --Si pasa test
             fnc formFNC `shouldBe` And (Or (Or (Var "p") (Var "s")) (Var "q")) (Or (Or (Var "r") (Var "s")) (Var "q"))
 
     describe "Tests clausulas" $ do 
-        it "Clausulas del Tt" $ do 
+        it "Clausulas del Tt" $ do  --Pasa Test
             clausulas (And (And (Or (Or (Var "p") (Var "q")) (Not (Var "p"))) (Or (Or (Var "p") (Var "q")) (Not (Var "q")))) (And (Or (Or (Var "p") (Var "q")) (Not (Var "p"))) (Or (Or (Var "p") (Var "q")) (Not (Var "q"))))) `shouldMatchList` [[Var "p",Var "q",Not (Var "p")],[Var "p",Var "q",Not (Var "q")],[Var "p",Var "q",Not (Var "p")],[Var "p",Var "q",Not (Var "q")]]
-        it "Clausulas del Cr" $ do 
+        it "Clausulas del Cr" $ do --Genera resultado esperado, pero falla test por tener orden distinto (No varia mucho) 
             clausulas (And (And (And (Or (Not (Var "p")) (Not (Var "p"))) (Or (Not (Var "q")) (Not (Var "p")))) (And (Or (Not (Var "p")) (Not (Var "q"))) (Or (Not (Var "q")) (Not (Var "q"))))) (Or (Or (Var "p") (Var "q")) (Or (Var "p") (Var "q")))) `shouldMatchList` [[Not (Var "p")],[Not (Var "q"),Not (Var "p")],[Not (Var "p"),Not (Var "q")],[Not (Var "q")],[Var "p",Var "q"]]
         it "Clausulas del Truco" $ do 
             clausulas (And (Or (Or (Var "p") (Var "s")) (Var "q")) (Or (Or (Var "r") (Var "s")) (Var "q"))) `shouldMatchList` [[Var "p",Var "s",Var "q"],[Var "r",Var "s",Var "q"]]

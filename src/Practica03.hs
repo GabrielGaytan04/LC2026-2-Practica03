@@ -120,53 +120,10 @@ fnc f = manipulacionFormula (fnn f)
 RESOLUCION BINARIA
 -}
 
---FUNCION AUXILIAR LEYES SIMPLIFICACION DE FORMULAS
-simplificacion :: Prop -> Prop 
-{-
-La implementacion actual convierte dos entradas a iguales, se debe revisar si no es contraproducente. 
--}
---NEUTROS
---Disyuncion p or false 
-simplificacion (Or p (Cons False)) = p 
---Conjuncion p and true 
-simplificacion (And p (Cons True)) = p
-
---IDEMPOTENCIA
---Or de variables 
-simplificacion (Or (Var a) (Var b)) = Var a
-    where Var b = Var a
---Or de formula
-simplificacion (Or a b) = a 
-    where b = a
-simplificacion (And a b) = a
-    where b = a
-    
---ABSORCION 
---Disyuncion
-simplificacion (Or a (And b c)) = a
-    where b = a 
---Conjuncion
-simplificacion (And d (Or e f)) = d 
-    where  d = e
-     
----INVERSOS 
---Tercero excluido
-simplificacion (Or a (Not b)) = Cons True
-    where b = a 
---Contradiccion 
-simplificacion (And a (Not b)) = Cons False 
-    where b = a
-    
---DOMINANCIA 
---Disyuncion entre una formula y una constante verdadera 
-simplificacion (Or a (Cons True)) = Cons True 
---Conjuncino entre una formula y una constante falsa
-simplificacion (And a (Cons False)) = Cons False
-
-
 --Sinonimos a usar
 type Literal = Prop
 type Clausula = [Literal]
+
 {-
 Para el ejercicio de las clausulas, lo que necesitamos es ocupar nuevamente un par de funciones auxiliares. Una de ellas para descomponer una formula en una lista y otra funcion que genere a la lista 
 de listas. 
@@ -178,7 +135,14 @@ clausula (Var a) = [Var a]
 --Clausula de una negacion 
 clausula (Not a) = [Not a]
 --Disyuncion
-clausula (Or f1 f2) = clausula f1 ++ clausula f2 
+{-
+NOTA
+Se agrego una verificacion para eliminar repetidos de las clausulas. Si la clausula de f1 y de f2 son iguales,
+solo agregamos una de ellas, si no, agregamos la concatenacion de clausulas.
+-}
+clausula (Or f1 f2) = if(clausula f1 == clausula f2)
+    then clausula f1
+    else clausula f1 ++ clausula f2 
 
 --FUNCION AUXILIAR PARA OBTENER LAS CLAUSULAS DE UNA FORMULA
 obtenerClausulas :: Prop -> [Clausula]
