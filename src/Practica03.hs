@@ -125,7 +125,6 @@ simplificacion :: Prop -> Prop
 {-
 La implementacion actual convierte dos entradas a iguales, se debe revisar si no es contraproducente. 
 -}
-
 --NEUTROS
 --Disyuncion p or false 
 simplificacion (Or p (Cons False)) = p 
@@ -168,12 +167,27 @@ simplificacion (And a (Cons False)) = Cons False
 --Sinonimos a usar
 type Literal = Prop
 type Clausula = [Literal]
+{-
+Para el ejercicio de las clausulas, lo que necesitamos es ocupar nuevamente un par de funciones auxiliares. Una de ellas para descomponer una formula en una lista y otra funcion que genere a la lista 
+de listas. 
+-}
+--FUNCION AUXILIAR PARA PODER DESCOMPONER UNA FORMULA.
+clausula :: Prop -> Clausula
+--Clausula de una variable atomica
+clausula (Var a) = [Var a]
+--Clausula de una negacion 
+clausula (Not a) = [Not a]
+--Disyuncion
+clausula (Or f1 f2) = clausula f1 ++ clausula f2 
+
+--FUNCION AUXILIAR PARA OBTENER LAS CLAUSULAS DE UNA FORMULA
+obtenerClausulas :: Prop -> [Clausula]
+obtenerClausulas (And f1 f2) = obtenerClausulas f1 ++ obtenerClausulas f2
+obtenerClausulas f = [clausula f]
 
 --Ejercicio 1
 clausulas :: Prop -> [Clausula]
---Caso base-
-clausulas _ = [[]]
-clausulas (Literal a) = [[a]]
+clausulas f = obtenerClausulas (fnc f)
 
 --Ejercicio 2
 resolucion :: Clausula -> Clausula -> Clausula
