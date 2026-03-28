@@ -153,9 +153,37 @@ obtenerClausulas f = [clausula f]
 clausulas :: Prop -> [Clausula]
 clausulas f = obtenerClausulas (fnc f)
 
+-- Funcion Auxiliar sinRepetidos reutilizada y modificada un poco,
+-- para mantener la clausula como un cjto
+sinRepetidos :: [Literal] -> [Literal]
+sinRepetidos [] = []
+sinRepetidos (x:xs) = if x `elem` xs
+                      then sinRepetidos xs
+                      else x : sinRepetidos xs
+
+-- Función auxiliar que calcula la literal contraria
+contraria :: Literal -> Literal
+contraria (Not p) = p
+contraria p = Not p
+    
 --Ejercicio 2
 resolucion :: Clausula -> Clausula -> Clausula
-resolucion = undefined
+resolucion c1 c2 =
+  -- Con el if no asumimos que hay resolvente, con esto pasamos el test del truco
+  if hayResolvente c1 c2
+  then 
+    let
+      -- Identificamos la literal de c1 que tiene su contraria en c2      
+      l = head [x | x <- c1, contraria x `elem` c2]
+      lc = contraria l
+      -- Quitamos el par de literales complementarias
+      c1Limpia = [x | x <- c1, x /= l]
+      c2Limpia = [x | x <- c2, x /= lc]
+      -- Unimos y con la funcion auxiliar quitamos repetidos
+    in
+      sinRepetidos (c1Limpia ++ c2Limpia)
+  else
+    sinRepetidos (c1 ++ c2)
 
 {-
 ALGORITMO DE SATURACION
@@ -163,7 +191,8 @@ ALGORITMO DE SATURACION
 
 --Ejercicio 1
 hayResolvente :: Clausula -> Clausula -> Bool
-hayResolvente = undefined
+-- Si la lista no esta vacia -> si hay resolvente
+hayResolvente c1 c2 = not (null [l | l <- c1, contraria l `elem` c2])
 
 --Ejercicio 2
 --Funcion principal que pasa la formula proposicional a fnc e invoca a res con las clausulas de la formula.
