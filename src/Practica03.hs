@@ -194,7 +194,42 @@ hayResolvente :: Clausula -> Clausula -> Bool
 -- Si la lista no esta vacia -> si hay resolvente
 hayResolvente c1 c2 = not (null [l | l <- c1, contraria l `elem` c2])
 
+-- Normaliza una clausula 
+normalizarClausula :: Clausula -> Clausula
+normalizarClausula = sinRepetidos
+
+-- Elimina clausulas repetidas
+sinRepetidosClausulas :: [Clausula] -> [Clausula]
+sinRepetidosClausulas [] = []
+sinRepetidosClausulas (c:cs)
+  | c `elem` cs = sinRepetidosClausulas cs
+  | otherwise   = c : sinRepetidosClausulas cs
+
+-- Genera todos los resolventes SIN duplicar pares
+resolverTodos :: [Clausula] -> [Clausula]
+resolverTodos cs =
+  [ normalizarClausula (resolucion c1 c2) |
+    (i, c1) <- zip [0..] cs,
+    (j, c2) <- zip [0..] cs,
+    i < j,                     
+    hayResolvente c1 c2
+  ]
+
 --Ejercicio 2
 --Funcion principal que pasa la formula proposicional a fnc e invoca a res con las clausulas de la formula.
 saturacion :: Prop -> Bool
-saturacion = undefined
+saturacion f = saturar (map normalizarClausula (clausulas f))
+  where
+    saturar :: [Clausula] -> Bool
+    saturar s =
+      let
+        nuevos = resolverTodos s
+        s' = sinRepetidosClausulas (map normalizarClausula (s ++ nuevos))
+      in
+        if [] `elem` s'
+        then False
+        
+        else if s' == s
+        then True
+       
+        else saturar s'

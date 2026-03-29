@@ -66,8 +66,8 @@ library
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
 
-    -- Other library packages from which modules are imported.
-    build-depends:    base ^>= 4.17.2.0
+    -- Other library packages from which modules are imported. Antes base ^>= 4.17.2.0
+    build-depends:    base >= 4.17 && <5
 
     -- Directories containing source files.
     hs-source-dirs:   src
@@ -97,9 +97,9 @@ test-suite Practica03-test
     -- The entrypoint to the test suite.
     main-is:          Practica03Test.hs
 
-    -- Test dependencies.
+    -- Test dependencies. Antes: base ^>=4.17.2.0
     build-depends:
-        base ^>=4.17.2.0,
+        base >=4.17 && <5,
         hspec,
         deepseq ^>=1.5.1.0,
         Practica03

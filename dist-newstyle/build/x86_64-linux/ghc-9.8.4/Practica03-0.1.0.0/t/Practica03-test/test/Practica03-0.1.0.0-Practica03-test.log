@@ -1,0 +1,42 @@
+Test suite Practica03-test: RUNNING...
+
+Tests Forma Normal Negativa
+  Fórmula Tt [✔]
+  Fórmula Cr [✔]
+  Fórmula Truco [✔]
+Tests Forma Normal Conjuntiva
+  Fórmula Tt [✔]
+  Fórmula Cr [✘]
+  Fórmula Truco [✔]
+Tests clausulas
+  Clausulas del Tt [✔]
+  Clausulas del Cr [✔]
+  Clausulas del Truco [✔]
+Tests resolucion
+  Clausulas del Tt [✔]
+  Clausulas del Cr [✔]
+  Clausulas del truco [✔]
+Tests hayResolvente
+  Clausulas del Tt [✔]
+  Clausulas del Cr [✔]
+  Clausulas del truco [✔]
+Tests saturacion
+  Fórmula Tt [✔]
+  Fórmula Cr [✔]
+  Fórmula Truco [✔]
+
+Failures:
+
+  test/Practica03Test.hs:34:24: 
+  1) Tests Forma Normal Conjuntiva Fórmula Cr
+       expected: ((((¬p ∨ ¬p) ∧ (¬q ∨ ¬p)) ∧ ((¬p ∨ ¬q) ∧ (¬q ∨ ¬q))) ∧ ((p ∨ q) ∨ (p ∨ q)))
+        but got: ((((¬p ∨ ¬p) ∧ (¬p ∨ ¬q)) ∧ ((¬q ∨ ¬p) ∧ (¬q ∨ ¬q))) ∧ ((p ∨ q) ∨ (p ∨ q)))
+
+  To rerun use: --match "/Tests Forma Normal Conjuntiva/Fórmula Cr/" --seed 250485960
+
+Randomized with seed 250485960
+
+Finished in 1.0089 seconds
+18 examples, 1 failure
+Test suite Practica03-test: FAIL
+Test suite logged to: /home/jesusdreyes/Documentos/Escuela/8vo semestre/Logica Computacional/Laboratorio/Practicas/LC2026-2-Practica03/dist-newstyle/build/x86_64-linux/ghc-9.8.4/Practica03-0.1.0.0/t/Practica03-test/test/Practica03-0.1.0.0-Practica03-test.log
